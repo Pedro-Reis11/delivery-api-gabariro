@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.deliverytech.delivery_api.dto.ProdutoRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +34,12 @@ public class ProdutoService {
     /**
      * Listar todos os produtos
      */
-    public List<ProdutoDTO> listarTodos() {
+    public List<ProdutoRequestDTO> listarTodos() {
         List<Produto> produtos = produtoRepository.findAll();
-        List<ProdutoDTO> produtosDTO = new ArrayList<>();
+        List<ProdutoRequestDTO> produtosDTO = new ArrayList<>();
 
         for (Produto produto : produtos) {
-            ProdutoDTO dto = new ProdutoDTO(produto.getId(), produto.getNome(), produto.getDescricao(),
+            ProdutoRequestDTO dto = new ProdutoRequestDTO(produto.getId(), produto.getNome(), produto.getDescricao(),
                     produto.getPreco(), produto.getCategoria(), produto.getDisponivel());
             produtosDTO.add(dto);
         }
