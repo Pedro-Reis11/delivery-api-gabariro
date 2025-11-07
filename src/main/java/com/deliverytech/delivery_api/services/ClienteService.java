@@ -18,29 +18,25 @@ import com.deliverytech.delivery_api.repository.ClienteRepository;
 @Transactional
 public class ClienteService {
 
-     @Autowired
+    @Autowired
     private ClienteRepository clienteRepository;
 
     /**
      * Cadastrar novo cliente
      */
-    public ClienteResponseDTO cadastrar(ClienteResquetDTO dto) {
+    public Cliente cadastrar(Cliente cliente) {
         // Validar email único
-        if (clienteRepository.existsByEmail(dto.getEmail())) {
-            throw new BusinessException("Email já cadastrado: " + dto.getEmail());
+        if (clienteRepository.existsByEmail(cliente.getEmail())) {
+            throw new IllegalArgumentException("Email já cadastrado: " + cliente.getEmail());
         }
 
-        Cliente cliente = new Cliente();
-        cliente.setNome(dto.getNome());
-        cliente.setEmail(dto.getEmail());
-        cliente.setTelefone(dto.getTelefone());
-        cliente.setEndereco(dto.getEndereco());
+        // Validações de negócio
+        validarDadosCliente(cliente);
+
         // Definir como ativo por padrão
         cliente.setAtivo(true);
-        cliente.setDataCadastro(LocalDateTime.now());
 
-
-        return new ClienteResponseDTO(clienteRepository.save(cliente));
+        return clienteRepository.save(cliente);
     }
 
     /**
@@ -72,11 +68,11 @@ public class ClienteService {
      */
     public Cliente atualizar(Long id, Cliente clienteAtualizado) {
         Cliente cliente = buscarPorId(id)
-            .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado: " + id));
 
         // Verificar se email não está sendo usado por outro cliente
         if (!cliente.getEmail().equals(clienteAtualizado.getEmail()) &&
-            clienteRepository.existsByEmail(clienteAtualizado.getEmail())) {
+                clienteRepository.existsByEmail(clienteAtualizado.getEmail())) {
             throw new IllegalArgumentException("Email já cadastrado: " + clienteAtualizado.getEmail());
         }
 
@@ -94,7 +90,7 @@ public class ClienteService {
      */
     public void inativar(Long id) {
         Cliente cliente = buscarPorId(id)
-            .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado: " + id));
 
         cliente.inativar();
         clienteRepository.save(cliente);
@@ -111,18 +107,18 @@ public class ClienteService {
     /**
      * Validações de negócio
      */
-//    private void validarDadosCliente(ClienteResquetDTO cliente) {
-//        if (cliente.getNome() == null || cliente.getNome().trim().isEmpty()) {
-//            throw new IllegalArgumentException("Nome é obrigatório");
-//        }
-//
-//        if (cliente.getEmail() == null || cliente.getEmail().trim().isEmpty()) {
-//            throw new IllegalArgumentException("Email é obrigatório");
-//        }
-//
-//        if (cliente.getNome().length() < 2) {
-//            throw new IllegalArgumentException("Nome deve ter pelo menos 2 caracteres");
-//        }
-//    }
-    
+    private void validarDadosCliente(Cliente cliente) {
+        if (cliente.getNome() == null || cliente.getNome().trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome é obrigatório");
+        }
+
+        if (cliente.getEmail() == null || cliente.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email é obrigatório");
+        }
+
+        if (cliente.getNome().length() < 2) {
+            throw new IllegalArgumentException("Nome deve ter pelo menos 2 caracteres");
+        }
+    }
+
 }

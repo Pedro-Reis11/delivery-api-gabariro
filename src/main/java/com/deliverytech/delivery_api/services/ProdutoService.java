@@ -8,13 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deliverytech.delivery_api.entity.Produto;
-import com.deliverytech.delivery_api.entity.ProdutoDTO;
 import com.deliverytech.delivery_api.repository.ProdutoRepository;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
 
 @Service
 public class ProdutoService {
-    
+
     @Autowired
     private ProdutoRepository produtoRepository;
 
@@ -111,5 +110,17 @@ public class ProdutoService {
 
         produto.setDisponivel(false);
         return produtoRepository.save(produto);
+    }
+    // Apenas produtos disponíveis
+    public List<Produto> buscarDisponiveis() {
+        return produtoRepository.findByDisponivelTrue();
+    }
+    // Produtos por categoria
+    public List<Produto> buscarPorCategoria(String categoria) {
+        return produtoRepository.findByCategoria(categoria);
+    }
+    // Produtos por faixa de preço (menor ou igual)
+    public List<Produto> buscarPorFaixaDePreco(BigDecimal preco) {
+        return produtoRepository.findByPrecoLessThanEqual(preco);
     }
 }
