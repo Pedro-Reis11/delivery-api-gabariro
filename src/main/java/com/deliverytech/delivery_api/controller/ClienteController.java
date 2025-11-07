@@ -28,23 +28,23 @@ import com.deliverytech.delivery_api.services.ClienteService;
 @RequestMapping("/clientes")
 @CrossOrigin(origins = "*")
 public class ClienteController {
-    
-   @Autowired
+
+    @Autowired
     private ClienteService clienteService;
 
     /**
      * Cadastrar novo cliente
      */
     @PostMapping
-    public ResponseEntity<?> cadastrar(@Valid @RequestBody ClienteResquetDTO cliente) {
+    public ResponseEntity<?> cadastrar(@Validated @RequestBody Cliente cliente) {
         try {
-            ClienteResponseDTO clienteSalvo = clienteService.cadastrar(cliente);
+            Cliente clienteSalvo = clienteService.cadastrar(cliente);
             return ResponseEntity.status(HttpStatus.CREATED).body(clienteSalvo);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erro interno do servidor");
+                    .body("Erro interno do servidor");
         }
     }
 
@@ -76,7 +76,7 @@ public class ClienteController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable Long id,
-                                      @Validated @RequestBody Cliente cliente) {
+                                       @Validated @RequestBody Cliente cliente) {
         try {
             Cliente clienteAtualizado = clienteService.atualizar(id, cliente);
             return ResponseEntity.ok(clienteAtualizado);
@@ -84,7 +84,7 @@ public class ClienteController {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erro interno do servidor");
+                    .body("Erro interno do servidor");
         }
     }
 
@@ -100,7 +100,7 @@ public class ClienteController {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erro interno do servidor");
+                    .body("Erro interno do servidor");
         }
     }
 
